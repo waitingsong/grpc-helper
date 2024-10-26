@@ -1,7 +1,7 @@
 import { Compiler } from '../src';
-import { existsSync } from 'fs';
+import { existsSync, rmSync, rmdirSync } from 'fs';
 import { join } from 'path';
-import { remove, readFileSync } from 'fs-extra';
+import { readFileSync } from 'fs-extra';
 
 describe('/test/index.test.ts', () => {
   it('test generate ts interface', async () => {
@@ -32,10 +32,10 @@ describe('/test/index.test.ts', () => {
     expect(content.includes('addMany(options?: grpc.IClientOptions): grpc.IClientWritableStreamService<AddArgs, Num>;')).toBeTruthy();
     expect(content.includes('addEmpty(options?: grpc.IClientOptions): grpc.IClientUnaryService<any, any>;')).toBeTruthy();
 
-    await remove(join(__dirname, './fixtures/common/test/hero.ts'));
-    await remove(join(__dirname, './fixtures/common/helloworld.ts'));
-    await remove(join(__dirname, './fixtures/common/math.ts'));
-    await remove(join(__dirname, './fixtures/common/hello_stream.ts'));
+    rmSync(join(__dirname, './fixtures/common/test/hero.ts'));
+    rmSync(join(__dirname, './fixtures/common/helloworld.ts'));
+    rmSync(join(__dirname, './fixtures/common/math.ts'));
+    rmSync(join(__dirname, './fixtures/common/hello_stream.ts'));
   });
 
   it('test generate ts interface to specified directory', async () => {
@@ -52,7 +52,7 @@ describe('/test/index.test.ts', () => {
     expect(existsSync(join(__dirname, './fixtures/common/domain/helloworld.ts'))).toBeTruthy();
     expect(existsSync(join(__dirname, './fixtures/common/domain/math.ts'))).toBeTruthy();
 
-    await remove(join(__dirname, './fixtures/common/domain'));
+    rmdirSync(join(__dirname, './fixtures/common/domain'), { recursive: true });
   });
 
   it('test generate ts interface to specified directory with reserve directory', async () => {
@@ -70,7 +70,7 @@ describe('/test/index.test.ts', () => {
     expect(existsSync(join(__dirname, './fixtures/common/domain/helloworld.ts'))).toBeTruthy();
     expect(existsSync(join(__dirname, './fixtures/common/domain/math.ts'))).toBeTruthy();
 
-    await remove(join(__dirname, './fixtures/common/domain'));
+    rmdirSync(join(__dirname, './fixtures/common/domain'), { recursive: true });
   });
 
   it('test generate ts interface keep case', async () => {
@@ -88,7 +88,7 @@ describe('/test/index.test.ts', () => {
     const content = readFileSync(join(__dirname, './fixtures/keep_case/domain/helloworld_keep_case.ts'), 'utf8');
     expect(content.includes('key_filed')).toBeTruthy();
 
-    await remove(join(__dirname, './fixtures/keep_case/domain'));
+    rmdirSync(join(__dirname, './fixtures/keep_case/domain'), { recursive: true });
   });
 
   it.skip('test fix issue 999', async () => {
@@ -119,6 +119,6 @@ describe('/test/index.test.ts', () => {
     expect(!content.includes('namespace base')).toBeTruthy();
     expect(!content.includes('namespace gogo')).toBeTruthy();
 
-    await remove(join(__dirname, './fixtures/issue999/domain'));
+    rmdirSync(join(__dirname, './fixtures/issue999/domain'), { recursive: true });
   });
 });
